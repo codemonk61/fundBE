@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDB from "./config/db"; // Import the database connection
+import connectDB from "./config/db";
+ // Import the database connection
 import villagerRoute from "./routes/villagers.routes"
 
 dotenv.config();
