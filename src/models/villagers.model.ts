@@ -6,6 +6,7 @@ export interface IVillager extends Document {
     mobileNumber: string;
     sweetGiven: boolean;
     paymentStatus: "pending" | "completed";
+    paymentType: 'cash' | 'online'
 }
 
 const VillagerSchema: Schema = new Schema({
@@ -15,6 +16,7 @@ const VillagerSchema: Schema = new Schema({
     mobileNumber: { type: String, required: false },
     sweetGiven: { type: Boolean, default: false },
     paymentStatus: { type: String, enum: ["pending", "completed"], default: "pending" },
+    paymentType: { type: Boolean, default: false },
 });
 
 export default mongoose.model<IVillager>("Villager", VillagerSchema);

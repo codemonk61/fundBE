@@ -9,8 +9,8 @@ router.post("/add", async (req, res) => {
    
     try {
 
-        const { name, amount, address, mobileNumber, sweetGiven, paymentStatus } = req.body;
-        const newVillager = new Villager({ name, amount, address, mobileNumber, sweetGiven, paymentStatus });
+        const { name, amount, address, mobileNumber, sweetGiven, paymentStatus, paymentType } = req.body;
+        const newVillager = new Villager({ name, amount, address, mobileNumber, sweetGiven, paymentStatus, paymentType});
         await newVillager.save();
         res.status(201).json({ success: true, message: "Villager added successfully!" });
     } catch (error) {
