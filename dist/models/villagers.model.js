@@ -24,6 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+//schema for user
 const VillagerSchema = new mongoose_1.Schema({
     name: { type: String, required: false },
     amount: { type: String, required: false },
@@ -31,5 +32,6 @@ const VillagerSchema = new mongoose_1.Schema({
     mobileNumber: { type: String, required: false },
     sweetGiven: { type: Boolean, default: false },
     paymentStatus: { type: String, enum: ["pending", "completed"], default: "pending" },
+    paymentType: { type: String, enum: ["cash", "online"], default: 'cash' },
 });
 exports.default = mongoose_1.default.model("Villager", VillagerSchema);

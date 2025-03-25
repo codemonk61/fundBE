@@ -17,10 +17,9 @@ const villagers_model_1 = __importDefault(require("../models/villagers.model"));
 const router = express_1.default.Router();
 // Add a villager
 router.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
- 
     try {
-        const { name, amount, address, mobileNumber, sweetGiven, paymentStatus } = req.body;
-        const newVillager = new villagers_model_1.default({ name, amount, address, mobileNumber, sweetGiven, paymentStatus });
+        const { name, amount, address, mobileNumber, sweetGiven, paymentStatus, paymentType } = req.body;
+        const newVillager = new villagers_model_1.default({ name, amount, address, mobileNumber, sweetGiven, paymentStatus, paymentType });
         yield newVillager.save();
         res.status(201).json({ success: true, message: "Villager added successfully!" });
     }
@@ -40,7 +39,6 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 // Get  villager by ID
 router.get("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-   
     try {
         const villager = yield villagers_model_1.default.findById(req.params.id);
         res.status(200).json(villager);
@@ -99,12 +97,15 @@ router.get("/getExpense", (req, res) => __awaiter(void 0, void 0, void 0, functi
         const sweetGiven = yield villagers_model_1.default.countDocuments({ sweetGiven: true });
         const paymentPending = yield villagers_model_1.default.countDocuments({ paymentStatus: "pending" });
         const paymentCompleted = yield villagers_model_1.default.countDocuments({ paymentStatus: "completed" });
-        const amount = yield villagers_model_1.default.countDocuments({ amount: "" });
+        const sweetGivenUser = yield villagers_model_1.default.find({ sweetGiven: true });
+        const paymentPendingUser = yield villagers_model_1.default.find({ paymentStatus: "pending" });
+        const paymentCompletedUser = yield villagers_model_1.default.find({ paymentStatus: "completed" });
+        const villagers = yield villagers_model_1.default.find();
         const response = [
-            { count: totalUsers, title: "Total User" },
-            { count: sweetGiven, title: "Sweet Given" },
-            { count: paymentPending, title: "Payment Pending" },
-            { count: paymentCompleted, title: "Payment Completed" },
+            { count: totalUsers, title: "Total User", data: villagers },
+            { count: sweetGiven, title: "Sweet Given", data: sweetGivenUser },
+            { count: paymentPending, title: "Payment Pending", data: paymentPendingUser },
+            { count: paymentCompleted, title: "Payment Completed", data: paymentCompletedUser },
         ];
         res.json(response);
     }
