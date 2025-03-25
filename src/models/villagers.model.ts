@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+//user schema type
 export interface IVillager extends Document {
     name: string;
     address: string;
@@ -9,6 +10,7 @@ export interface IVillager extends Document {
     paymentType: 'cash' | 'online'
 }
 
+//schema for user
 const VillagerSchema: Schema = new Schema({
     name: { type: String, required: false },
     amount: { type: String, required: false },
