@@ -16,7 +16,7 @@ const VillagerSchema: Schema = new Schema({
     mobileNumber: { type: String, required: false },
     sweetGiven: { type: Boolean, default: false },
     paymentStatus: { type: String, enum: ["pending", "completed"], default: "pending" },
-    paymentType: { type: Boolean, default: false },
+    paymentType: { type: String,  enum: ["cash", "online"], default: 'cash' },
 });
 
 export default mongoose.model<IVillager>("Villager", VillagerSchema);
