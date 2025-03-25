@@ -17,7 +17,7 @@ const villagers_model_1 = __importDefault(require("../models/villagers.model"));
 const router = express_1.default.Router();
 // Add a villager
 router.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
+ 
     try {
         const { name, amount, address, mobileNumber, sweetGiven, paymentStatus } = req.body;
         const newVillager = new villagers_model_1.default({ name, amount, address, mobileNumber, sweetGiven, paymentStatus });
@@ -40,7 +40,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 // Get  villager by ID
 router.get("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params.id);
+   
     try {
         const villager = yield villagers_model_1.default.findById(req.params.id);
         res.status(200).json(villager);

@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Add a villager
 router.post("/add", async (req, res) => {
-    console.log(req.body)
+   
     try {
 
         const { name, amount, address, mobileNumber, sweetGiven, paymentStatus } = req.body;
@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
 
 // Get  villager by ID
 router.get("/user/:id", async (req, res) => {
-    console.log(req.params.id)
+  
     try {
         const villager = await Villager.findById(req.params.id);
         res.status(200).json(villager);
@@ -98,15 +98,17 @@ router.get("/getExpense", async (req, res) => {
         const sweetGiven = await Villager.countDocuments({ sweetGiven: true });
         const paymentPending = await Villager.countDocuments({ paymentStatus: "pending" });
         const paymentCompleted = await Villager.countDocuments({ paymentStatus: "completed" });
-        const amount = await Villager.countDocuments({ amount: "" });
 
-
+        const sweetGivenUser = await Villager.find({ sweetGiven: true });
+        const paymentPendingUser = await Villager.find({ paymentStatus: "pending" });
+        const paymentCompletedUser = await Villager.find({ paymentStatus: "completed" });
+        const villagers = await Villager.find();
 
         const response = [
-            { count: totalUsers, title: "Total User" },
-            { count: sweetGiven, title: "Sweet Given" },
-            { count: paymentPending, title: "Payment Pending" },
-            { count: paymentCompleted, title: "Payment Completed" },
+            { count: totalUsers, title: "Total User", data: villagers},
+            { count: sweetGiven, title: "Sweet Given", data: sweetGivenUser},
+            { count: paymentPending, title: "Payment Pending", data: paymentPendingUser },
+            { count: paymentCompleted, title: "Payment Completed", data: paymentCompletedUser },
         ];
 
         res.json(response);
