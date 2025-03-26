@@ -101,8 +101,13 @@ router.get("/getExpense", (req, res) => __awaiter(void 0, void 0, void 0, functi
         const paymentPendingUser = yield villagers_model_1.default.find({ paymentStatus: "pending" });
         const paymentCompletedUser = yield villagers_model_1.default.find({ paymentStatus: "completed" });
         const villagers = yield villagers_model_1.default.find();
+        // Calculate total amount collected (convert string to number)
+        let totalAmountCollected = villagers.reduce((sum, villager) => {
+            return sum + (parseFloat(villager.amount) || 0); // Convert amount to number and sum up
+        }, 0);
         const response = [
             { count: totalUsers, title: "Total User", data: villagers },
+            { count: totalAmountCollected, title: "Total Amount Collected" }, // New key
             { count: sweetGiven, title: "Sweet Given", data: sweetGivenUser },
             { count: paymentPending, title: "Payment Pending", data: paymentPendingUser },
             { count: paymentCompleted, title: "Payment Completed", data: paymentCompletedUser },
