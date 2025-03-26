@@ -103,16 +103,25 @@ router.get("/getExpense", async (req, res) => {
         const paymentPendingUser = await Villager.find({ paymentStatus: "pending" });
         const paymentCompletedUser = await Villager.find({ paymentStatus: "completed" });
         const villagers = await Villager.find();
+
+        // Calculate total amount collected (convert string to number)
+        let totalAmountCollected = villagers.reduce((sum, villager) => {
+            return sum + (parseFloat(villager.amount) || 0); // Convert amount to number and sum up
+        }, 0);
+
         const response = [
-            { count: totalUsers, title: "Total User", data: villagers},
-            { count: sweetGiven, title: "Sweet Given", data: sweetGivenUser},
+            { count: totalUsers, title: "Total User", data: villagers },
+            { count: totalAmountCollected, title: "Total Amount Collected" }, // New key
+            { count: sweetGiven, title: "Sweet Given", data: sweetGivenUser },
             { count: paymentPending, title: "Payment Pending", data: paymentPendingUser },
             { count: paymentCompleted, title: "Payment Completed", data: paymentCompletedUser },
         ];
+
         res.json(response);
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 export default router;

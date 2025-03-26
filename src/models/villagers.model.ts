@@ -7,7 +7,8 @@ export interface IVillager extends Document {
     mobileNumber: string;
     sweetGiven: boolean;
     paymentStatus: "pending" | "completed";
-    paymentType: 'cash' | 'online'
+    paymentType: 'cash' | 'online';
+    amount: string
 }
 
 
