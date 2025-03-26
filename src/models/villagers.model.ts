@@ -10,6 +10,7 @@ export interface IVillager extends Document {
     paymentType: 'cash' | 'online'
 }
 
+
 //schema for user
 const VillagerSchema: Schema = new Schema({
     name: { type: String, required: false },
@@ -20,5 +21,7 @@ const VillagerSchema: Schema = new Schema({
     paymentStatus: { type: String, enum: ["pending", "completed"], default: "pending" },
     paymentType: { type: String,  enum: ["cash", "online"], default: 'cash' },
 });
+
+
 
 export default mongoose.model<IVillager>("Villager", VillagerSchema);
