@@ -5,6 +5,7 @@ import connectDB from "./config/db";
  // Import the database connection
  import authRoutes from "./routes/auth.routes";
 import villagerRoute from "./routes/villagers.routes"
+import expenseRoute from "./routes/expense.routes"
 
 dotenv.config();
 connectDB(); // Connect to MongoDB
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/villagers", villagerRoute)
+app.use("/api/villagers/expenses", expenseRoute)
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -1,5 +1,36 @@
 import express from "express";
-import Villager from "../models/villagers.model";
+import axios from 'axios'
+import Villager, { IVillager } from "../models/villagers.model";
+
+// Your WhatsApp Cloud API Credentials
+const WHATSAPP_TOKEN = "YOUR_ACCESS_TOKEN"; // Replace with your actual token
+const PHONE_NUMBER_ID = "YOUR_PHONE_NUMBER_ID"; // Replace with your actual phone number ID
+const WHATSAPP_API_URL = `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`;
+
+// Function to send a WhatsApp message
+async function sendWhatsAppMessage(phoneNumber: string, message: string): Promise<void> {
+    try {
+        const response = await axios.post(
+            WHATSAPP_API_URL,
+            {
+                messaging_product: "whatsapp",
+                to: phoneNumber,
+                type: "text",
+                text: { body: message },
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        console.log("WhatsApp message sent:", response.data);
+    } catch (error: any) {
+        console.error("Error sending WhatsApp message:", error.response?.data || error.message);
+    }
+}
+
 
 
 const router = express.Router();
@@ -81,15 +112,30 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
-// Update user status
-router.put("/:id", async (req, res) => {
+// Update villager status
+router.put("/:id", async (req, res): Promise<any> => {
     try {
-         await Villager.findByIdAndUpdate(req.params.id, req.body);
-        res.json({ success: true, message: `user updated!` });
+        const user = await Villager.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Update the user
+        await Villager.findByIdAndUpdate(req.params.id, req.body);
+
+        // Check if sweetGiven is true and send WhatsApp message
+        if (req.body.sweetGiven === true && user.mobileNumber) {
+            const message = `🎉 Hello ${user.name}, thank you for receiving the sweets! Have a great day! 🎊`;
+            await sendWhatsAppMessage(user.mobileNumber, message);
+        }
+
+        res.json({ success: true, message: `User updated!` });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error updating payment status." });
     }
 });
+
+
 
 // API to get expense data
 router.get("/getExpense", async (req, res) => {

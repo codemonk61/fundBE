@@ -13,7 +13,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const axios_1 = __importDefault(require("axios"));
 const villagers_model_1 = __importDefault(require("../models/villagers.model"));
+// Your WhatsApp Cloud API Credentials
+const WHATSAPP_TOKEN = "YOUR_ACCESS_TOKEN"; // Replace with your actual token
+const PHONE_NUMBER_ID = "YOUR_PHONE_NUMBER_ID"; // Replace with your actual phone number ID
+const WHATSAPP_API_URL = `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`;
+// Function to send a WhatsApp message
+function sendWhatsAppMessage(phoneNumber, message) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        try {
+            const response = yield axios_1.default.post(WHATSAPP_API_URL, {
+                messaging_product: "whatsapp",
+                to: phoneNumber,
+                type: "text",
+                text: { body: message },
+            }, {
+                headers: {
+                    Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+                    "Content-Type": "application/json",
+                },
+            });
+            console.log("WhatsApp message sent:", response.data);
+        }
+        catch (error) {
+            console.error("Error sending WhatsApp message:", ((_a = error.response) === null || _a === void 0 ? void 0 : _a.data) || error.message);
+        }
+    });
+}
 const router = express_1.default.Router();
 // Add a villager
 router.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -80,11 +108,21 @@ router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).json({ success: false, message: "Error updating record." });
     }
 }));
-// Update user status
+// Update villager status
 router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const user = yield villagers_model_1.default.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        // Update the user
         yield villagers_model_1.default.findByIdAndUpdate(req.params.id, req.body);
-        res.json({ success: true, message: `user updated!` });
+        // Check if sweetGiven is true and send WhatsApp message
+        if (req.body.sweetGiven === true && user.mobileNumber) {
+            const message = `🎉 Hello ${user.name}, thank you for receiving the sweets! Have a great day! 🎊`;
+            yield sendWhatsAppMessage(user.mobileNumber, message);
+        }
+        res.json({ success: true, message: `User updated!` });
     }
     catch (error) {
         res.status(500).json({ success: false, message: "Error updating payment status." });

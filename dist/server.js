@@ -10,6 +10,7 @@ const db_1 = __importDefault(require("./config/db"));
 // Import the database connection
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 const villagers_routes_1 = __importDefault(require("./routes/villagers.routes"));
+const expense_routes_1 = __importDefault(require("./routes/expense.routes"));
 dotenv_1.default.config();
 (0, db_1.default)(); // Connect to MongoDB
 const app = (0, express_1.default)();
@@ -19,6 +20,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use("/api/auth", auth_routes_1.default);
 app.use("/api/villagers", villagers_routes_1.default);
+app.use("/api/villagers/expenses", expense_routes_1.default);
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
